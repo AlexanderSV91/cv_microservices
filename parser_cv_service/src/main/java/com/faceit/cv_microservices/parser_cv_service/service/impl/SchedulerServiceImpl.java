@@ -51,7 +51,7 @@ public class SchedulerServiceImpl implements SchedulerService {
                 h2.forEach(elementH2 -> {
                     cvModel.setTitleCv(element.select("h2").select("a").text());
                     String href = element.select("h2").select("a").attr("href");
-                    cvModel.setId(Long.parseLong(href.replace("resumes","").replace("/","")));
+                    cvModel.setId(Long.parseLong(href.replace("resumes", "").replace("/", "")));
                     cvModel.setHrefCv("https://www.work.ua" + href);
 
                     String rawSalary = elementH2.getElementsByClass("nowrap").text();
@@ -101,8 +101,13 @@ public class SchedulerServiceImpl implements SchedulerService {
                         } else if (raws.length == 2) {
                             previousWork.setPositionName(raws[0]);
                             String[] strings = raws[1].trim().split("·");
-                            previousWork.setCompanyName(strings[0].trim());
-                            previousWork.setYear(strings[1].trim());
+                            if (strings.length == 1) {
+                                previousWork.setCompanyName(strings[0].trim());
+                                previousWork.setYear(strings[0].trim());
+                            } else if (strings.length == 2) {
+                                previousWork.setCompanyName(strings[0].trim());
+                                previousWork.setYear(strings[1].trim());
+                            }
                         }
                         previousWorkList.add(previousWork);
                     });
