@@ -13,7 +13,7 @@
 
     <groupId>com.faceit.cv_microservices</groupId>
     <artifactId>eureka_server</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>eureka_server</name>
     <description>Demo project for Spring Boot</description>
 
@@ -42,6 +42,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
