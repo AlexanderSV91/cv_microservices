@@ -1,9 +1,11 @@
-package com.faceit.cv_microservices.parser_cv_service.model;
+package com.faceit.cv_microservices.cv_storage_service.model.mongo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,15 +14,17 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CvModel {
+@Document(collection = "cv")
+public class CvMongoModel {
 
+    @Id
     private String id;
     private String titleCv;
-    private Salary salary;
-    private User user;
+    private SalaryMongoModel salaryMongoModel;
+    private UserMongoModel userMongoModel;
     private String[] typeOfEmployment;
     private String education;
-    private List<PreviousWork> previousWorks;
+    private List<PreviousWorkMongoModel> previousWorkMongoModels;
     private String hrefCv;
     private String dateCreateCv;
     private LocalDateTime dateTimeParsingCv;

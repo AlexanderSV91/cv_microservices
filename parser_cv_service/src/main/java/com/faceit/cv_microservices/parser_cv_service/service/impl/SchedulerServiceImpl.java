@@ -5,6 +5,7 @@ import com.faceit.cv_microservices.parser_cv_service.model.PreviousWork;
 import com.faceit.cv_microservices.parser_cv_service.model.Salary;
 import com.faceit.cv_microservices.parser_cv_service.model.User;
 import com.faceit.cv_microservices.parser_cv_service.service.SchedulerService;
+import com.faceit.cv_microservices.parser_cv_service.service.ServiceFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,6 +24,12 @@ import java.util.List;
 public class SchedulerServiceImpl implements SchedulerService {
 
     private static final int FIXED_DELAY = 10_000;
+
+    private final ServiceFeignClient serviceFeignClient;
+
+    public SchedulerServiceImpl(ServiceFeignClient serviceFeignClient) {
+        this.serviceFeignClient = serviceFeignClient;
+    }
 
     @Override
     @Async("threadPoolTaskExecutorParsing")
@@ -49,10 +56,19 @@ public class SchedulerServiceImpl implements SchedulerService {
 
                 Elements h2 = element.select("h2");
                 h2.forEach(elementH2 -> {
-                    cvModel.setTitleCv(element.select("h2").select("a").text());
+                    String titleCv = element
+                            .select("h2")
+                            .select("a")
+                            .text();
+                    if (!titleCv.isEmpty()) {
+                        cvModel.setTitleCv(titleCv);
+                    }
+
                     String href = element.select("h2").select("a").attr("href");
-                    cvModel.setId(Long.parseLong(href.replace("resumes", "").replace("/", "")));
-                    cvModel.setHrefCv("https://www.work.ua" + href);
+                    if (!href.isEmpty()) {
+                        cvModel.setId(href.replace("resumes", "").replace("/", ""));
+                        cvModel.setHrefCv("https://www.work.ua" + href);
+                    }
 
                     String rawSalary = elementH2.getElementsByClass("nowrap").text();
                     if (!rawSalary.isEmpty()) {
@@ -61,19 +77,27 @@ public class SchedulerServiceImpl implements SchedulerService {
                         salary.setCurrencyType(s[1]);
                     }
 
-                    String rawDateCreateCv = element.select("h2").select("a").attr("title");
-                    cvModel.setDateCreateCv(rawDateCreateCv.substring(rawDateCreateCv.indexOf("резюме від") + 10).trim());
+                    String rawDateCreateCv = element
+                            .select("h2")
+                            .select("a")
+                            .attr("title");
+                    if (!rawDateCreateCv.isEmpty()) {
+                        cvModel.setDateCreateCv(rawDateCreateCv
+                                .substring(rawDateCreateCv.indexOf("резюме від") + 10).trim());
+                    }
                 });
 
                 String name = element.getElementsByTag("b").text();
-                if (!"Приховано".equals(name)) {
-                    String[] rawFullName = name.split(" ");
-                    if (rawFullName.length == 2) {
-                        user.setFirstName(rawFullName[1]);
-                        user.setLastName(rawFullName[0]);
-                    } else if (rawFullName.length == 1) {
-                        user.setFirstName(rawFullName[0]);
-                        user.setLastName(rawFullName[0]);
+                if (!name.isEmpty()) {
+                    if (!"Приховано".equals(name)) {
+                        String[] rawFullName = name.split(" ");
+                        if (rawFullName.length == 2) {
+                            user.setFirstName(rawFullName[1]);
+                            user.setLastName(rawFullName[0]);
+                        } else if (rawFullName.length == 1) {
+                            user.setFirstName(rawFullName[0]);
+                            user.setLastName(rawFullName[0]);
+                        }
                     }
                 }
 
@@ -84,7 +108,8 @@ public class SchedulerServiceImpl implements SchedulerService {
 
                 Elements elementsByClass = element.getElementsByClass("add-bottom");
                 elementsByClass.forEach(elementByClass -> {
-                    String[] raw = elementByClass.getElementsByClass("text-muted").first().text().split("·");
+                    String[] raw = elementByClass
+                            .getElementsByClass("text-muted").first().text().split("·");
                     if (raw.length == 1) {
                         cvModel.setEducation(raw[0].trim());
                     } else if (raw.length == 2) {
@@ -112,14 +137,15 @@ public class SchedulerServiceImpl implements SchedulerService {
                         previousWorkList.add(previousWork);
                     });
                 });
-
-                cvModel.setPreviousWorks(previousWorkList);
+                if (previousWorkList.size() > 0) {
+                    cvModel.setPreviousWorks(previousWorkList);
+                }
                 cvModel.setSalary(salary);
                 cvModel.setUser(user);
                 cvModel.setDateTimeParsingCv(LocalDateTime.now());
                 cvModelList.add(cvModel);
             });
-            System.out.println(cvModelList);
+            serviceFeignClient.saveCvBulk(cvModelList);
         }
     }
 
