@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -22,10 +21,8 @@ public class CvMongoModel {
     private String titleCv;
     private SalaryMongoModel salaryMongoModel;
     private UserMongoModel userMongoModel;
-    private String[] typeOfEmployment;
+    private List<String> typeOfEmployments;
     private String education;
     private List<PreviousWorkMongoModel> previousWorkMongoModels;
     private String hrefCv;
-    private String dateCreateCv;
-    private LocalDateTime dateTimeParsingCv;
 }

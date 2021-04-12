@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -18,10 +17,8 @@ public class CvModel {
     private String titleCv;
     private Salary salary;
     private User user;
-    private String[] typeOfEmployment;
+    private List<String> typeOfEmployments;
     private String education;
     private List<PreviousWork> previousWorks;
     private String hrefCv;
-    private String dateCreateCv;
-    private LocalDateTime dateTimeParsingCv;
 }

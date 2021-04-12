@@ -15,15 +15,16 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
 @Service
 public class SchedulerServiceImpl implements SchedulerService {
 
-    private static final int FIXED_DELAY = 10_000;
+    private static int lastPage;
 
     private final ServiceFeignClient serviceFeignClient;
 
@@ -33,21 +34,34 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     @Override
     @Async("threadPoolTaskExecutorParsing")
-    @Scheduled(fixedDelay = FIXED_DELAY)
+    @Scheduled(fixedDelay = 10_000)
     public void parsingFirstPage() {
+        List<CvModel> cvModels = parsing(1);
+        if (!cvModels.isEmpty()) {
+            serviceFeignClient.saveCvBulk(cvModels);
+        }
+    }
+
+    @Override
+    public void parsingNextPage() {
+
+    }
+
+    private List<CvModel> parsing(final int page) {
         Document doc = null;
         try {
             doc = Jsoup
-                    .connect("https://www.work.ua/resumes-zaporizhzhya/?page=1")
+                    .connect("https://www.work.ua/resumes-zaporizhzhya/?page=" + page)
                     .userAgent("Mozilla")
                     .timeout(5_000)
                     .get();
         } catch (IOException e) {
             log.error("crashed method parsingFirstPage() message=" + e.getMessage());
         }
+
         if (null != doc) {
             Elements elements = doc.getElementsByClass("card card-hover resume-link card-visited wordwrap");
-            List<CvModel> cvModelList = new ArrayList<>(elements.size());
+            List<CvModel> cvModelList = new ArrayList<>();
             elements.forEach(element -> {
                 CvModel cvModel = new CvModel();
                 User user = new User();
@@ -75,15 +89,6 @@ public class SchedulerServiceImpl implements SchedulerService {
                         String[] s = rawSalary.split(" ");
                         salary.setValue(Integer.parseInt(s[0]));
                         salary.setCurrencyType(s[1]);
-                    }
-
-                    String rawDateCreateCv = element
-                            .select("h2")
-                            .select("a")
-                            .attr("title");
-                    if (!rawDateCreateCv.isEmpty()) {
-                        cvModel.setDateCreateCv(rawDateCreateCv
-                                .substring(rawDateCreateCv.indexOf("резюме від") + 10).trim());
                     }
                 });
 
@@ -114,7 +119,7 @@ public class SchedulerServiceImpl implements SchedulerService {
                         cvModel.setEducation(raw[0].trim());
                     } else if (raw.length == 2) {
                         cvModel.setEducation(raw[0].trim());
-                        cvModel.setTypeOfEmployment(raw[1].trim().split(","));
+                        cvModel.setTypeOfEmployments(Arrays.asList(raw[1].trim().split(",")));
                     }
 
                     Elements li = elementByClass.getElementsByTag("li");
@@ -134,23 +139,27 @@ public class SchedulerServiceImpl implements SchedulerService {
                                 previousWork.setYear(strings[1].trim());
                             }
                         }
-                        previousWorkList.add(previousWork);
+                        if (previousWork.getPositionName() != null
+                                || previousWork.getCompanyName() != null
+                                || previousWork.getYear() != null) {
+                            previousWorkList.add(previousWork);
+                        }
                     });
                 });
+
                 if (previousWorkList.size() > 0) {
                     cvModel.setPreviousWorks(previousWorkList);
                 }
-                cvModel.setSalary(salary);
-                cvModel.setUser(user);
-                cvModel.setDateTimeParsingCv(LocalDateTime.now());
+                if (salary.getCurrencyType() != null) {
+                    cvModel.setSalary(salary);
+                }
+                if (user.getFirstName() != null && user.getLastName() != null) {
+                    cvModel.setUser(user);
+                }
                 cvModelList.add(cvModel);
             });
-            serviceFeignClient.saveCvBulk(cvModelList);
+            return cvModelList;
         }
-    }
-
-    @Override
-    public void parsingNextPage() {
-
+        return Collections.emptyList();
     }
 }

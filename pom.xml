@@ -4,6 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>com.faceit.cv_microservices</groupId>
+    <artifactId>cv_microservices</artifactId>
+    <version>1.0.0</version>
+    <name>cv_microservices</name>
+    <packaging>pom</packaging>
+    <description>Demo project for Spring Boot</description>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -11,37 +18,30 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.faceit.cv_microservices</groupId>
-    <artifactId>cv_microservices</artifactId>
-    <version>1.0.0</version>
-    <name>cv_microservices</name>
-    <description>Demo project for Spring Boot</description>
-
     <properties>
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
+    <modules>
+        <module>eureka_server</module>
+        <module>parser_cv_service</module>
+        <module>cv_storage_service</module>
+    </modules>
+
     <dependencies>
+        <!-- Spring Boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!--Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>
