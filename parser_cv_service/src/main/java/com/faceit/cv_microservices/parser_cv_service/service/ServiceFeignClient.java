@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(value = "cv-storage")
+@FeignClient(value = "cv-storage-service")
 public interface ServiceFeignClient {
 
     @PostMapping("/cv")

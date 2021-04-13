@@ -28,6 +28,7 @@
         <module>eureka_server</module>
         <module>parser_cv_service</module>
         <module>cv_storage_service</module>
+        <module>config_server</module>
     </modules>
 
     <dependencies>
@@ -35,6 +36,15 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
         </dependency>
         <!--Test -->
         <dependency>
