@@ -8,6 +8,7 @@ import com.faceit.cv_microservices.cv_storage_service.model.mongo.CvMongoModel;
 import com.faceit.cv_microservices.cv_storage_service.service.CvElasticService;
 import com.faceit.cv_microservices.cv_storage_service.service.CvMongoService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,9 +34,15 @@ public class CvStorageControllerRest {
 
     @PostMapping("/cv")
     public void saveCvBulk(@RequestBody final List<CvRequest> cvRequestList) {
+        log.error("size=" + cvRequestList.size());
         List<CvMongoModel> cvMongoModelList = cvMongoMapper.toCvMongoModelList(cvRequestList);
         List<CvElasticModel> cvElasticModelList = cvElasticMapper.toCvElasticModelList(cvRequestList);
         cvMongoService.saveAll(cvMongoModelList);
         cvElasticService.saveAll(cvElasticModelList);
+    }
+
+    @GetMapping("/elastic")
+    public List<CvElasticModel> findAllCvElastic() {
+        return cvElasticService.findAll();
     }
 }
