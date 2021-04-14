@@ -34,7 +34,6 @@ public class CvStorageControllerRest {
 
     @PostMapping("/cv")
     public void saveCvBulk(@RequestBody final List<CvRequest> cvRequestList) {
-        log.error("size=" + cvRequestList.size());
         List<CvMongoModel> cvMongoModelList = cvMongoMapper.toCvMongoModelList(cvRequestList);
         List<CvElasticModel> cvElasticModelList = cvElasticMapper.toCvElasticModelList(cvRequestList);
         cvMongoService.saveAll(cvMongoModelList);

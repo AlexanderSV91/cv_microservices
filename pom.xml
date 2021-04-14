@@ -29,18 +29,20 @@
         <module>parser_cv_service</module>
         <module>cv_storage_service</module>
         <module>config_server</module>
+        <module>gateway_server</module>
+        <module>cv_service</module>
     </modules>
 
     <dependencies>
         <!-- Spring Boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <!--Test -->
         <dependency>
