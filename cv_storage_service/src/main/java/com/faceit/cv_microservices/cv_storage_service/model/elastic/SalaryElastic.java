@@ -11,7 +11,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SalaryElasticModel {
+public class SalaryElastic {
 
     @Field(type = FieldType.Text)
     private String currencyType;

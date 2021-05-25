@@ -1,4 +1,4 @@
-package com.faceit.cv_microservices.cv_service.dto.response;
+package com.faceit.cv_microservices.cv_service.model.mongo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,14 +11,14 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CvResponse {
+public class CvMongo {
 
     private String id;
     private String titleCv;
-    private SalaryResponse salary;
-    private UserResponse user;
+    private SalaryMongo salary;
+    private UserMongo user;
     private List<String> typeOfEmployments;
     private String education;
-    private List<PreviousWorkResponse> previousWorks;
+    private List<PreviousWorkMongo> previousWorks;
     private String hrefCv;
 }

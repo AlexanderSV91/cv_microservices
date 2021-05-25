@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CvModel {
+public class Cv {
 
     private String id;
     private String titleCv;

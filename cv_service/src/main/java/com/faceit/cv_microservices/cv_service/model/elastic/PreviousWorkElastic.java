@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PreviousWorkElasticModel {
+public class PreviousWorkElastic {
 
     private String positionName;
     private String companyName;

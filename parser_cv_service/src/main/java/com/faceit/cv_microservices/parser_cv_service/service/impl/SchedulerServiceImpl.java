@@ -1,44 +1,47 @@
 package com.faceit.cv_microservices.parser_cv_service.service.impl;
 
-import com.faceit.cv_microservices.parser_cv_service.model.CvModel;
+import com.faceit.cv_microservices.parser_cv_service.model.Cv;
 import com.faceit.cv_microservices.parser_cv_service.model.PreviousWork;
 import com.faceit.cv_microservices.parser_cv_service.model.Salary;
 import com.faceit.cv_microservices.parser_cv_service.model.User;
+import com.faceit.cv_microservices.parser_cv_service.service.CvStorageServiceFeignClient;
 import com.faceit.cv_microservices.parser_cv_service.service.SchedulerService;
-import com.faceit.cv_microservices.parser_cv_service.service.ServiceFeignClient;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
 public class SchedulerServiceImpl implements SchedulerService {
 
+    private static final String BASE_ADDRESS = "https://www.work.ua";
+    private static final String CITY = "/resumes-zaporizhzhya";
+
     private static int lastPage;
 
-    private final ServiceFeignClient serviceFeignClient;
+    private final CvStorageServiceFeignClient cvStorageServiceFeignClient;
 
-    public SchedulerServiceImpl(ServiceFeignClient serviceFeignClient) {
-        this.serviceFeignClient = serviceFeignClient;
+    public SchedulerServiceImpl(CvStorageServiceFeignClient cvStorageServiceFeignClient) {
+        this.cvStorageServiceFeignClient = cvStorageServiceFeignClient;
     }
 
     @Override
     @Async("threadPoolTaskExecutorParsing")
     @Scheduled(fixedDelay = 10_000)
     public void parsingFirstPage() {
-        List<CvModel> cvModels = parsing(1);
-        if (!cvModels.isEmpty()) {
-            serviceFeignClient.saveCvBulk(cvModels);
+        List<Cv> cvs = this.parsing(1);
+        if (!CollectionUtils.isEmpty(cvs)) {
+            this.cvStorageServiceFeignClient.saveMongoCvBulk(cvs);
+            this.cvStorageServiceFeignClient.saveElasticCvBulk(cvs);
         }
     }
 
@@ -47,11 +50,11 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     }
 
-    private List<CvModel> parsing(final int page) {
+    private List<Cv> parsing(final int page) {
         Document doc = null;
         try {
             doc = Jsoup
-                    .connect("https://www.work.ua/resumes-zaporizhzhya/?page=" + page)
+                    .connect(BASE_ADDRESS + CITY + "/?page=" + page)
                     .userAgent("Mozilla")
                     .timeout(5_000)
                     .get();
@@ -59,33 +62,30 @@ public class SchedulerServiceImpl implements SchedulerService {
             log.error("crashed method parsingFirstPage() message=" + e.getMessage());
         }
 
-        if (null != doc) {
-            Elements elements = doc.getElementsByClass("card card-hover resume-link card-visited wordwrap");
-            List<CvModel> cvModelList = new ArrayList<>();
+        if (Objects.nonNull(doc)) {
+            final Elements elements = doc.getElementsByClass("card card-hover resume-link card-visited wordwrap");
+            List<Cv> cvList = new ArrayList<>();
             elements.forEach(element -> {
-                CvModel cvModel = new CvModel();
+                Cv cv = new Cv();
                 User user = new User();
                 Salary salary = new Salary();
                 List<PreviousWork> previousWorkList = new ArrayList<>();
 
-                Elements h2 = element.select("h2");
+                final Elements h2 = element.select("h2");
                 h2.forEach(elementH2 -> {
-                    String titleCv = element
-                            .select("h2")
-                            .select("a")
-                            .text();
-                    if (!titleCv.isEmpty()) {
-                        cvModel.setTitleCv(titleCv);
+                    String titleCv = element.select("h2").select("a").text();
+                    if (StringUtils.isNotEmpty(titleCv)) {
+                        cv.setTitleCv(titleCv);
                     }
 
                     String href = element.select("h2").select("a").attr("href");
-                    if (!href.isEmpty()) {
-                        cvModel.setId(href.replace("resumes", "").replace("/", ""));
-                        cvModel.setHrefCv("https://www.work.ua" + href);
+                    if (StringUtils.isNotEmpty(href)) {
+                        cv.setId(href.replace("resumes", "").replace("/", ""));
+                        cv.setHrefCv(BASE_ADDRESS + href);
                     }
 
                     String rawSalary = elementH2.getElementsByClass("nowrap").text();
-                    if (!rawSalary.isEmpty()) {
+                    if (StringUtils.isNotEmpty(rawSalary)) {
                         String[] s = rawSalary.split(" ");
                         salary.setValue(Integer.parseInt(s[0]));
                         salary.setCurrencyType(s[1]);
@@ -93,7 +93,7 @@ public class SchedulerServiceImpl implements SchedulerService {
                 });
 
                 String name = element.getElementsByTag("b").text();
-                if (!name.isEmpty()) {
+                if (StringUtils.isNotEmpty(name)) {
                     if (!"Приховано".equals(name)) {
                         String[] rawFullName = name.split(" ");
                         if (rawFullName.length == 2) {
@@ -107,22 +107,21 @@ public class SchedulerServiceImpl implements SchedulerService {
                 }
 
                 String srcImage = element.getElementsByTag("img").attr("src");
-                if (!srcImage.isEmpty()) {
+                if (StringUtils.isNotEmpty(srcImage)) {
                     user.setSrcImage(srcImage);
                 }
 
-                Elements elementsByClass = element.getElementsByClass("add-bottom");
+                final Elements elementsByClass = element.getElementsByClass("add-bottom");
                 elementsByClass.forEach(elementByClass -> {
-                    String[] raw = elementByClass
-                            .getElementsByClass("text-muted").first().text().split("·");
+                    String[] raw = elementByClass.getElementsByClass("text-muted").first().text().split("·");
                     if (raw.length == 1) {
-                        cvModel.setEducation(raw[0].trim());
+                        cv.setEducation(raw[0].trim());
                     } else if (raw.length == 2) {
-                        cvModel.setEducation(raw[0].trim());
-                        cvModel.setTypeOfEmployments(Arrays.asList(raw[1].trim().split(",")));
+                        cv.setEducation(raw[0].trim());
+                        cv.setTypeOfEmployments(Arrays.asList(raw[1].trim().split(",")));
                     }
 
-                    Elements li = elementByClass.getElementsByTag("li");
+                    final Elements li = elementByClass.getElementsByTag("li");
                     li.forEach(elementLi -> {
                         String[] raws = elementLi.text().trim().split(",");
                         PreviousWork previousWork = new PreviousWork();
@@ -139,26 +138,26 @@ public class SchedulerServiceImpl implements SchedulerService {
                                 previousWork.setYear(strings[1].trim());
                             }
                         }
-                        if (previousWork.getPositionName() != null
-                                || previousWork.getCompanyName() != null
-                                || previousWork.getYear() != null) {
+                        if (Objects.nonNull(previousWork.getPositionName())
+                                || Objects.nonNull(previousWork.getCompanyName())
+                                || Objects.nonNull(previousWork.getYear())) {
                             previousWorkList.add(previousWork);
                         }
                     });
                 });
 
                 if (previousWorkList.size() > 0) {
-                    cvModel.setPreviousWorks(previousWorkList);
+                    cv.setPreviousWorks(previousWorkList);
                 }
-                if (salary.getCurrencyType() != null) {
-                    cvModel.setSalary(salary);
+                if (Objects.nonNull(salary.getCurrencyType())) {
+                    cv.setSalary(salary);
                 }
-                if (user.getFirstName() != null && user.getLastName() != null) {
-                    cvModel.setUser(user);
+                if (Objects.nonNull(user.getFirstName()) && Objects.nonNull(user.getLastName())) {
+                    cv.setUser(user);
                 }
-                cvModelList.add(cvModel);
+                cvList.add(cv);
             });
-            return cvModelList;
+            return cvList;
         }
         return Collections.emptyList();
     }

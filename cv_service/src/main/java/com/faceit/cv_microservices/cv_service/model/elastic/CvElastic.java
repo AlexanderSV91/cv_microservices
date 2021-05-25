@@ -11,14 +11,14 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CvElasticModel {
+public class CvElastic {
 
     private String id;
     private String titleCv;
-    private SalaryElasticModel salaryElasticModel;
-    private UserElasticModel userElasticModel;
+    private SalaryElastic salary;
+    private UserElastic user;
     private List<String> typeOfEmployments;
     private String education;
-    private List<PreviousWorkElasticModel> previousWorkElasticModels;
+    private List<PreviousWorkElastic> previousWorks;
     private String hrefCv;
 }

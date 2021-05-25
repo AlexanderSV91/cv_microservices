@@ -4,15 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserMongoModel {
+public class PreviousWorkMongo {
 
-    private String firstName;
-    private String lastName;
-    private String srcImage;
+    private String positionName;
+    private String companyName;
+    private String year;
 }

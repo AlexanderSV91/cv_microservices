@@ -1,4 +1,4 @@
-package com.faceit.cv_microservices.cv_storage_service.model.mongo;
+package com.faceit.cv_microservices.cv_service.model.elastic;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SalaryMongoModel {
+public class SalaryElastic {
 
     private String currencyType;
     private int value;

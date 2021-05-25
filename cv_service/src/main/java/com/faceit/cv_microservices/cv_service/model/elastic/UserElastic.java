@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserElasticModel {
+public class UserElastic {
 
     private String firstName;
     private String lastName;

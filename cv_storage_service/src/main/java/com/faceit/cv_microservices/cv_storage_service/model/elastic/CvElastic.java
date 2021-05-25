@@ -1,8 +1,5 @@
 package com.faceit.cv_microservices.cv_storage_service.model.elastic;
 
-import com.faceit.cv_microservices.cv_storage_service.model.mongo.PreviousWorkMongoModel;
-import com.faceit.cv_microservices.cv_storage_service.model.mongo.SalaryMongoModel;
-import com.faceit.cv_microservices.cv_storage_service.model.mongo.UserMongoModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(indexName = "cv")
-public class CvElasticModel {
+public class CvElastic {
 
     @Id
     private String id;
@@ -28,10 +25,10 @@ public class CvElasticModel {
     private String titleCv;
 
     @Field(type = FieldType.Object)
-    private SalaryElasticModel salaryElasticModel;
+    private SalaryElastic salary;
 
     @Field(type = FieldType.Object)
-    private UserElasticModel userElasticModel;
+    private UserElastic user;
 
     @Field(type = FieldType.Text)
     private List<String> typeOfEmployments;
@@ -40,7 +37,7 @@ public class CvElasticModel {
     private String education;
 
     @Field(type = FieldType.Object)
-    private List<PreviousWorkElasticModel> previousWorkElasticModels;
+    private List<PreviousWorkElastic> previousWorks;
 
     @Field(type = FieldType.Keyword)
     private String hrefCv;

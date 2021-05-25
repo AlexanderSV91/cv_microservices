@@ -1,6 +1,6 @@
 package com.faceit.cv_microservices.cv_storage_service.service.impl;
 
-import com.faceit.cv_microservices.cv_storage_service.model.mongo.CvMongoModel;
+import com.faceit.cv_microservices.cv_storage_service.model.mongo.CvMongo;
 import com.faceit.cv_microservices.cv_storage_service.repository.mongo.CvMongoRepository;
 import com.faceit.cv_microservices.cv_storage_service.service.CvMongoService;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -20,7 +20,12 @@ public class CvMongoServiceImpl implements CvMongoService {
     }
 
     @Override
-    public void saveAll(List<CvMongoModel> cvMongoModelList) {
-        cvMongoRepository.saveAll(cvMongoModelList);
+    public void saveAll(List<CvMongo> cvMongoList) {
+        this.cvMongoRepository.saveAll(cvMongoList);
+    }
+
+    @Override
+    public List<CvMongo> findAll() {
+        return this.cvMongoRepository.findAll();
     }
 }

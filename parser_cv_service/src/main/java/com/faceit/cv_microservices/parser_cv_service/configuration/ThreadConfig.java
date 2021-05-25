@@ -16,8 +16,8 @@ public class ThreadConfig {
     private static final int QUEUE_CAPACITY = 50;
 
     @Bean(name = "threadPoolTaskExecutorParsing")
-    public Executor asyncExecutor1() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    public Executor asyncExecutorParsing() {
+        final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(CORE_POOL_SIZE);
         executor.setMaxPoolSize(MAX_NUM_POOL_SIZE);
         executor.setQueueCapacity(QUEUE_CAPACITY);

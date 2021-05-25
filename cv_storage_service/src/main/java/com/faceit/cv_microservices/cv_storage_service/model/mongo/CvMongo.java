@@ -14,15 +14,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "cv")
-public class CvMongoModel {
+public class CvMongo {
 
     @Id
     private String id;
     private String titleCv;
-    private SalaryMongoModel salaryMongoModel;
-    private UserMongoModel userMongoModel;
+    private SalaryMongo salary;
+    private UserMongo user;
     private List<String> typeOfEmployments;
     private String education;
-    private List<PreviousWorkMongoModel> previousWorkMongoModels;
+    private List<PreviousWorkMongo> previousWorks;
     private String hrefCv;
 }

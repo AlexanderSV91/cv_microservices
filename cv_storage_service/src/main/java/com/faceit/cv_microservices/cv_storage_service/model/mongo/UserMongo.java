@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PreviousWorkMongoModel {
+public class UserMongo {
 
-    private String positionName;
-    private String companyName;
-    private String year;
+    private String firstName;
+    private String lastName;
+    private String srcImage;
 }

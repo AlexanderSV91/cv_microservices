@@ -11,12 +11,12 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserElasticModel {
+public class PreviousWorkElastic {
 
     @Field(type = FieldType.Text)
-    private String firstName;
+    private String positionName;
     @Field(type = FieldType.Text)
-    private String lastName;
-    @Field(type = FieldType.Keyword)
-    private String srcImage;
+    private String companyName;
+    @Field(type = FieldType.Text)
+    private String year;
 }
