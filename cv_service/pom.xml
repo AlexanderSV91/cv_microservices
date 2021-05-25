@@ -19,7 +19,7 @@
         <java.version>11</java.version>
         <spring-cloud.version>2020.0.2</spring-cloud.version>
         <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
-        <org.projectlombok.version>1.18.18</org.projectlombok.version>
+        <org.projectlombok.version>1.18.20</org.projectlombok.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
