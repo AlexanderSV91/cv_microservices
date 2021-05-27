@@ -3,6 +3,8 @@ package com.faceit.cv_microservices.cv_storage_service.service.impl;
 import com.faceit.cv_microservices.cv_storage_service.model.elastic.CvElastic;
 import com.faceit.cv_microservices.cv_storage_service.repository.elastic.CvElasticRepository;
 import com.faceit.cv_microservices.cv_storage_service.service.CvElasticService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.stereotype.Service;
 
@@ -28,9 +30,7 @@ public class CvElasticServiceImpl implements CvElasticService {
     }
 
     @Override
-    public List<CvElastic> findAll() {
-        return StreamSupport
-                .stream(this.cvElasticRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
+    public Page<CvElastic> findAll(Pageable pageable) {
+        return this.cvElasticRepository.findAll(pageable);
     }
 }

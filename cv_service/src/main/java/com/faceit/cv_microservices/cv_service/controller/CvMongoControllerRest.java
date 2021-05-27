@@ -1,34 +1,30 @@
 package com.faceit.cv_microservices.cv_service.controller;
 
 import com.faceit.cv_microservices.cv_service.dto.response.CvResponse;
-import com.faceit.cv_microservices.cv_service.mapper.CvMongoMapper;
-import com.faceit.cv_microservices.cv_service.model.mongo.CvMongo;
-import com.faceit.cv_microservices.cv_service.service.CvStorageService;
+import com.faceit.cv_microservices.cv_service.service.CvStorageMongoService;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
+@Log4j2
 @RestController
 @RequestMapping("/api/v1/mongo")
 public class CvMongoControllerRest {
 
-    private final CvStorageService cvStorageService;
-    private final CvMongoMapper cvMongoMapper;
+    private final CvStorageMongoService cvStorageMongoService;
 
-    public CvMongoControllerRest(CvStorageService cvStorageService,
-                                 CvMongoMapper cvMongoMapper) {
-        this.cvStorageService = cvStorageService;
-        this.cvMongoMapper = cvMongoMapper;
+    public CvMongoControllerRest(CvStorageMongoService cvStorageMongoService) {
+        this.cvStorageMongoService = cvStorageMongoService;
     }
 
     @GetMapping
-    public ResponseEntity<List<CvResponse>> findAllCvMongo() {
-        List<CvMongo> cvMongoList = this.cvStorageService.findAllCvMongo();
-        List<CvResponse> cvResponseList = this.cvMongoMapper.toCvResponseList(cvMongoList);
-        return ResponseEntity.status(HttpStatus.OK).body(cvResponseList);
+    public ResponseEntity<Page<CvResponse>> findAllCv(Pageable pageable) {
+        Page<CvResponse> cvResponsePage = this.cvStorageMongoService.findAllCv(pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(cvResponsePage);
     }
 }

@@ -4,16 +4,16 @@ package com.faceit.cv_microservices.cv_service.service;
 import com.faceit.cv_microservices.cv_service.model.elastic.CvElastic;
 import com.faceit.cv_microservices.cv_service.model.mongo.CvMongo;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.List;
 
 @FeignClient(value = "cv-storage-service")
 public interface CvStorageServiceFeignClient {
 
     @GetMapping("/elastic/cv")
-    List<CvElastic> findAllCvElastic();
+    Page<CvElastic> findAllCvElastic(Pageable pageable);
 
     @GetMapping("/mongo/cv")
-    List<CvMongo> findAllCvMongo();
+    Page<CvMongo> findAllCvMongo(Pageable pageable);
 }
