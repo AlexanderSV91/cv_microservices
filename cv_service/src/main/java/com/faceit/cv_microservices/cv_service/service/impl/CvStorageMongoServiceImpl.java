@@ -9,6 +9,7 @@ import com.faceit.cv_microservices.cv_service.model.elastic.UserElastic;
 import com.faceit.cv_microservices.cv_service.model.mongo.CvMongo;
 import com.faceit.cv_microservices.cv_service.service.CvStorageMongoService;
 import com.faceit.cv_microservices.cv_service.service.CvStorageServiceFeignClient;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.log4j.Log4j2;
@@ -35,6 +36,7 @@ public class CvStorageMongoServiceImpl implements CvStorageMongoService {
 
     @Retry(name = "cv-mongo-resilience", fallbackMethod = "findAllCvFallback")
     @CircuitBreaker(name = "cv-mongo-resilience")
+    @Bulkhead(name = "cv-mongo-resilience")
     @Override
     public Page<CvResponse> findAllCv(Pageable pageable) {
         Page<CvMongo> cvPage = this.cvStorageServiceFeignClient.findAllCvMongo(pageable);
