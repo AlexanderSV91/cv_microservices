@@ -31,6 +31,7 @@
         <module>config_server</module>
         <module>gateway_server</module>
         <module>cv_service</module>
+        <module>user_service</module>
     </modules>
 
     <dependencies>

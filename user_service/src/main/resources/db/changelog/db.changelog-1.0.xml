@@ -1,0 +1,54 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet author="ashalamov" id="as1">
+        <sql>
+            <![CDATA[
+                DROP TABLE IF EXISTS users;
+                CREATE TABLE users
+                (
+                    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
+                    username   VARCHAR(32)       UNIQUE NOT NULL,
+                    password   VARCHAR(512)             NOT NULL,
+                    first_name VARCHAR(32)              NOT NULL,
+                    last_name  VARCHAR(32)              NOT NULL,
+                    age        INT
+                );
+
+                DROP TABLE IF EXISTS roles;
+                CREATE TABLE roles
+                (
+                    id   BIGINT PRIMARY KEY AUTO_INCREMENT,
+                    name VARCHAR(32)        UNIQUE NOT NULL
+                );
+
+                DROP TABLE IF EXISTS users_roles;
+                CREATE TABLE users_roles
+                (
+                    user_id BIGINT REFERENCES users (id),
+                    role_id BIGINT REFERENCES roles (id),
+                    PRIMARY KEY (user_id, role_id)
+                );
+
+                INSERT INTO users (username, password, first_name, last_name, age)
+                VALUES ('1', '$2a$10$VNVO9c3jM3PvDP6RQgqM1.Q2EyZj.YvSWTb3Xp9JitB6ZL26/EJfK', '1', '1', 1),
+                       ('2', '$2a$10$VNVO9c3jM3PvDP6RQgqM1.Q2EyZj.YvSWTb3Xp9JitB6ZL26/EJfK', '2', '2', 2),
+                       ('3', '$2a$10$VNVO9c3jM3PvDP6RQgqM1.Q2EyZj.YvSWTb3Xp9JitB6ZL26/EJfK', '3', '3', 3);
+
+                INSERT INTO roles (name)
+                VALUES ('ROLE_USER'),
+                       ('ROLE_ADMIN'),
+                       ('ROLE_EMPLOYEE');
+
+                INSERT INTO users_roles (users_roles.user_id, users_roles.role_id)
+                VALUES (1, 2),
+                       (2, 3),
+                       (3, 1);
+            ]]>
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
