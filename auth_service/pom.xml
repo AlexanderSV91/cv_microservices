@@ -72,7 +72,7 @@
             <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
         </dependency>
-
+        <!-- to resolve java.lang.NoClassDefFoundError: javax/xml/bind/DatatypeConverter -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>

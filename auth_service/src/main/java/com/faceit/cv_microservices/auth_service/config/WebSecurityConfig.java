@@ -19,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(
         securedEnabled = true,
@@ -66,23 +65,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .csrf().disable()
-                .formLogin()//.disable()
-                .and()
-                .httpBasic()//.disable()
-                .and()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .logout().disable()
                 .exceptionHandling().authenticationEntryPoint(this.authEntryPointJwt)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests().anyRequest().authenticated();
-
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers(HttpMethod.POST, "/api/v1/auth/signin", "/api/v1/auth/signup");
-        web.ignoring().antMatchers(HttpMethod.GET, "/", "/webjars/**", "/*.html",
-                "/favicon.ico", "/**/*.html", "/**/*.css", "/**/*.js");
     }
 }

@@ -5,12 +5,17 @@ import io.jsonwebtoken.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
+
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Component
 public class JwtUtils {
+
+    private static final String PREFIX_CLAIM_ROLE = "roles";
 
     @Value("${app.auth.tokenSecret}")
     private String jwtSecret;
@@ -20,10 +25,12 @@ public class JwtUtils {
 
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+        String roleRaw = userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + this.jwtExpirationMs))
+                .claim(PREFIX_CLAIM_ROLE, roleRaw)
                 .signWith(SignatureAlgorithm.HS512, this.jwtSecret)
                 .compact();
     }
