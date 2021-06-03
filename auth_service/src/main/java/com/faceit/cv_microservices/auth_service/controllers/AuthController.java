@@ -45,9 +45,9 @@ public class AuthController {
         Authentication authentication = this.authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signInRequest.getUserName(), signInRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = this.jwtUtils.generateJwtToken(authentication);
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
+        final String jwt = this.jwtUtils.generateJwtToken(authentication);
+        final UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         return ResponseEntity.ok(new JwtResponse(jwt, this.userMapper.toUserResponse(userDetails.getUser())));
     }
 

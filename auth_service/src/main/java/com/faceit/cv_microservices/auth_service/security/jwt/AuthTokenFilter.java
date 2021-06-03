@@ -36,31 +36,25 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                                     @NotNull HttpServletResponse response,
                                     @NotNull FilterChain filterChain) throws ServletException, IOException {
         try {
-            String jwt = parseJwt(request);
+            final String jwt = parseJwt(request);
             if (Objects.nonNull(jwt) && this.jwtUtils.validateJwtToken(jwt)) {
-                String userName = this.jwtUtils.getUserNameFromJwtToken(jwt);
-
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(this.jwtUtils.getUserNameFromJwtToken(jwt));
+                final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
             log.error("Cannot set user authentication: {}" + e.getMessage());
         }
-
         filterChain.doFilter(request, response);
     }
 
     private String parseJwt(HttpServletRequest request) {
-        String headerAuth = request.getHeader(HttpHeaders.AUTHORIZATION);
-
+        final String headerAuth = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith(PREFIX_BEARER)) {
             return headerAuth.substring(7);
         }
-
         return null;
     }
 }

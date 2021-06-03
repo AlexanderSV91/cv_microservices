@@ -15,7 +15,7 @@ public class AdviceControllerRest {
     @ExceptionHandler(BadCredentialsException.class)
     public Map<String, String> badCredentialEx(Exception e) {
         log.error(BadCredentialsException.class.getSimpleName());
-        Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<>();
         map.put("message", e.getMessage());
         return map;
     }

@@ -39,8 +39,9 @@ public class WebSecurityConfig {
                 .accessDeniedHandler((swe, e) -> Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN)))
                 .and()
                 .authorizeExchange()
-                .pathMatchers("/auth-service/api/v1/auth/**").permitAll()
+                .pathMatchers("/auth-service/api/v1/auth/signin", "/auth-service/api/v1/auth/signup").permitAll()
                 .anyExchange().authenticated()
-                .and().build();
+                .and()
+                .build();
     }
 }
