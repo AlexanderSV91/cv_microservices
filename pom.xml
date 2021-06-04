@@ -33,6 +33,7 @@
         <module>cv_service</module>
         <module>user_service</module>
         <module>auth_service</module>
+        <module>search_google_service</module>
     </modules>
 
     <dependencies>
