@@ -29,4 +29,9 @@ public class CvMongoControllerRest {
     public Page<CvMongo> findAllCv(Pageable pageable) {
         return this.cvMongoService.findAll(pageable);
     }
+
+    @GetMapping("/cv/{id}")
+    public CvMongo findById(@PathVariable String id) {
+        return this.cvMongoService.findById(id);
+    }
 }

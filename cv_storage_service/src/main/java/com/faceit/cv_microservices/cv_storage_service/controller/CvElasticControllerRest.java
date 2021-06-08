@@ -29,4 +29,9 @@ public class CvElasticControllerRest {
     public Page<CvElastic> findAllCv(Pageable pageable) {
         return this.cvElasticService.findAll(pageable);
     }
+
+    @GetMapping("cv/{id}")
+    public CvElastic findById(@PathVariable String id) {
+        return this.cvElasticService.findById(id);
+    }
 }

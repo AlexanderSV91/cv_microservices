@@ -10,4 +10,6 @@ import java.util.List;
 public interface CvMongoMapper {
 
     List<CvResponse> toCvResponseList(List<CvMongo> cvRequestList);
+
+    CvResponse toCvResponse(CvMongo cv);
 }

@@ -1,5 +1,6 @@
 package com.faceit.cv_microservices.search_google_service.service.impl;
 
+import com.faceit.cv_microservices.search_google_service.dto.request.CvRequest;
 import com.faceit.cv_microservices.search_google_service.model.Reference;
 import com.faceit.cv_microservices.search_google_service.service.SearchService;
 import lombok.extern.log4j.Log4j2;
@@ -31,7 +32,11 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     @Async("threadPoolTaskExecutorParsing")
-    public Future<List<Reference>> search(String text) {
+    public Future<List<Reference>> search(CvRequest cv) {
+        return this.search(cv.getUser().getFirstName() + " " + cv.getUser().getLastName());
+    }
+
+    private Future<List<Reference>> search(String text) {
         while (9 >= this.page) {
             Document doc = null;
             try {

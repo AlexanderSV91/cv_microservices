@@ -11,4 +11,6 @@ public interface CvElasticService {
     void saveAll(List<CvElastic> cvElasticList);
 
     Page<CvElastic> findAll(Pageable pageable);
+
+    CvElastic findById(String id);
 }

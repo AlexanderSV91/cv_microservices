@@ -2,11 +2,10 @@ package com.faceit.cv_microservices.cv_service.service.impl;
 
 import com.faceit.cv_microservices.cv_service.dto.response.CvResponse;
 import com.faceit.cv_microservices.cv_service.mapper.CvMongoMapper;
-import com.faceit.cv_microservices.cv_service.model.elastic.CvElastic;
-import com.faceit.cv_microservices.cv_service.model.elastic.PreviousWorkElastic;
-import com.faceit.cv_microservices.cv_service.model.elastic.SalaryElastic;
-import com.faceit.cv_microservices.cv_service.model.elastic.UserElastic;
 import com.faceit.cv_microservices.cv_service.model.mongo.CvMongo;
+import com.faceit.cv_microservices.cv_service.model.mongo.PreviousWorkMongo;
+import com.faceit.cv_microservices.cv_service.model.mongo.SalaryMongo;
+import com.faceit.cv_microservices.cv_service.model.mongo.UserMongo;
 import com.faceit.cv_microservices.cv_service.service.CvStorageMongoService;
 import com.faceit.cv_microservices.cv_service.service.CvStorageServiceFeignClient;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
@@ -39,25 +38,29 @@ public class CvStorageMongoServiceImpl implements CvStorageMongoService {
     @Bulkhead(name = "cv-mongo-resilience")
     @Override
     public Page<CvResponse> findAllCv(Pageable pageable) {
-        Page<CvMongo> cvPage = this.cvStorageServiceFeignClient.findAllCvMongo(pageable);
-        return pageEntityToPageResponse(cvPage);
+        return pageEntityToPageResponse(this.cvStorageServiceFeignClient.findAllCvMongo(pageable));
+    }
+
+    @Override
+    public CvMongo findById(String id) {
+        return this.cvStorageServiceFeignClient.findByIdMongo(id);
     }
 
     private PageImpl<CvResponse> pageEntityToPageResponse(Page<CvMongo> page) {
         return new PageImpl<>(this.cvMongoMapper.toCvResponseList(page.getContent()), page.getPageable(), page.getTotalElements());
     }
 
-    private Page<CvElastic> findAllCvFallback(final Pageable pageable, final Exception ex) {
-        CvElastic cvElastic = new CvElastic(
+    private Page<CvMongo> findAllCvFallback(final Pageable pageable, final Exception ex) {
+        CvMongo cv = new CvMongo(
                 "-1",
                 "no",
-                new SalaryElastic("no", -1),
-                new UserElastic("no", "no", "no"),
+                new SalaryMongo("no", -1),
+                new UserMongo("no", "no", "no"),
                 Collections.singletonList("no"),
                 "no",
-                Collections.singletonList(new PreviousWorkElastic("no", "no", "-1")),
+                Collections.singletonList(new PreviousWorkMongo("no", "no", "-1")),
                 "no");
-        List<CvElastic> list = Collections.singletonList(cvElastic);
+        List<CvMongo> list = Collections.singletonList(cv);
         return new PageImpl<>(list, pageable, 0);
     }
 }
