@@ -27,8 +27,8 @@ public class SearchControllerRest {
 
     @PostMapping
     public List<Reference> search(@RequestBody CvRequest cvRequest) throws ExecutionException, InterruptedException {
-        if (Objects.isNull(cvRequest.getUser())
-                || (StringUtils.isBlank(cvRequest.getUser().getFirstName()) && (StringUtils.isBlank(cvRequest.getUser().getLastName())))) {
+        if (Objects.isNull(cvRequest.getUser()) ||
+                (StringUtils.isBlank(cvRequest.getUser().getFirstName()) && StringUtils.isBlank(cvRequest.getUser().getLastName()))) {
             throw new RuntimeException();
         }
         return searchService.search(cvRequest).get();
