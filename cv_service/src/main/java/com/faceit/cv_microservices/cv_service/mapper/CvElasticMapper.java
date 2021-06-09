@@ -10,4 +10,6 @@ import java.util.List;
 public interface CvElasticMapper {
 
     List<CvResponse> toCvResponseList(List<CvElastic> cvElasticList);
+
+    CvResponse toCvResponse(CvElastic cv);
 }

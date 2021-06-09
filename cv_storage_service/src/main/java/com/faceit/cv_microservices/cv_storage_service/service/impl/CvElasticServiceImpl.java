@@ -9,8 +9,6 @@ import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class CvElasticServiceImpl implements CvElasticService {
@@ -32,5 +30,10 @@ public class CvElasticServiceImpl implements CvElasticService {
     @Override
     public Page<CvElastic> findAll(Pageable pageable) {
         return this.cvElasticRepository.findAll(pageable);
+    }
+
+    @Override
+    public CvElastic findById(String id) {
+        return this.cvElasticRepository.findById(id).orElseThrow();
     }
 }

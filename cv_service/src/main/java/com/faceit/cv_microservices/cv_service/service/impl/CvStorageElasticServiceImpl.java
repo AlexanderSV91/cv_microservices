@@ -38,8 +38,12 @@ public class CvStorageElasticServiceImpl implements CvStorageElasticService {
     @Bulkhead(name = "cv-elastic-resilience")
     @Override
     public Page<CvResponse> findAllCv(Pageable pageable) {
-        Page<CvElastic> cvPage = this.cvStorageServiceFeignClient.findAllCvElastic(pageable);
-        return pageEntityToPageResponse(cvPage);
+        return pageEntityToPageResponse(this.cvStorageServiceFeignClient.findAllCvElastic(pageable));
+    }
+
+    @Override
+    public CvElastic findById(String id) {
+        return this.cvStorageServiceFeignClient.findByIdElastic(id);
     }
 
     private PageImpl<CvResponse> pageEntityToPageResponse(Page<CvElastic> page) {
@@ -47,7 +51,7 @@ public class CvStorageElasticServiceImpl implements CvStorageElasticService {
     }
 
     private Page<CvElastic> findAllCvFallback(final Pageable pageable, final Exception ex) {
-        CvElastic cvElastic = new CvElastic(
+        CvElastic cv = new CvElastic(
                 "-1",
                 "no",
                 new SalaryElastic("no", -1),
@@ -56,7 +60,7 @@ public class CvStorageElasticServiceImpl implements CvStorageElasticService {
                 "no",
                 Collections.singletonList(new PreviousWorkElastic("no", "no", "-1")),
                 "no");
-        List<CvElastic> list = Collections.singletonList(cvElastic);
+        List<CvElastic> list = Collections.singletonList(cv);
         return new PageImpl<>(list, pageable, 0);
     }
 }

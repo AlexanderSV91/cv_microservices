@@ -30,4 +30,9 @@ public class CvMongoServiceImpl implements CvMongoService {
     public Page<CvMongo> findAll(final Pageable pageable) {
         return this.cvMongoRepository.findAll(pageable);
     }
+
+    @Override
+    public CvMongo findById(String id) {
+        return this.cvMongoRepository.findById(id).orElseThrow();
+    }
 }

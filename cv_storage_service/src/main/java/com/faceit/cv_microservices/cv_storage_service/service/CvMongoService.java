@@ -11,4 +11,6 @@ public interface CvMongoService {
     void saveAll(List<CvMongo> cvMongoList);
 
     Page<CvMongo> findAll(Pageable pageable);
+
+    CvMongo findById(String id);
 }
