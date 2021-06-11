@@ -4,6 +4,7 @@ import com.faceit.cv_microservices.user_service.model.Role;
 import com.faceit.cv_microservices.user_service.repository.RoleRepository;
 import com.faceit.cv_microservices.user_service.service.RoleService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.module.FindException;
 
@@ -17,6 +18,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Role findRoleByName(String name) {
         return this.roleRepository.findRoleByName(name).orElseThrow(FindException::new);
     }
