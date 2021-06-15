@@ -31,4 +31,9 @@ public class UserControllerRest {
     public UserResponse findUserByUserName(@PathVariable String userName) {
         return this.userMapper.toUserResponse(this.userService.findUserByUserName(userName));
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteById(@PathVariable long id) {
+        this.userService.deleteById(id);
+    }
 }
