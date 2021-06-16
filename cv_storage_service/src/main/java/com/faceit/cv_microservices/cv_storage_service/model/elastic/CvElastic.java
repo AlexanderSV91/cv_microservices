@@ -6,6 +6,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
@@ -14,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(indexName = "cv")
-public class CvElastic {
+public class CvElastic implements Serializable {
 
     @Id
     private String id;
