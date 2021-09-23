@@ -24,8 +24,7 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        return http
-                .cors()
+        return http.cors()
                 .and()
                 .csrf().disable()
                 .httpBasic().disable()
@@ -40,7 +39,8 @@ public class WebSecurityConfig {
                 .and()
                 .authorizeExchange()
                 .pathMatchers("/auth-service/api/v1/auth/signin", "/auth-service/api/v1/auth/signup").permitAll()
-                .anyExchange().authenticated()
+                .anyExchange()
+                .authenticated()
                 .and()
                 .build();
     }

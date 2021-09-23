@@ -37,8 +37,7 @@ public class CvMongoControllerRest {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "get all cv mongo", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CvResponse.class))}),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(schema = @Schema(hidden = true))}),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
-    })
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})})
     @GetMapping
     public ResponseEntity<Page<CvResponse>> findAllCv(Pageable pageable) {
         return ResponseEntity.ok(this.cvStorageMongoService.findAllCv(pageable));
@@ -48,8 +47,7 @@ public class CvMongoControllerRest {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "get cv mongo", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CvResponse.class))}),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(schema = @Schema(hidden = true))}),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
-    })
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})})
     @GetMapping("/{id}")
     public ResponseEntity<CvResponse> findById(@PathVariable String id) {
         return ResponseEntity.ok(this.cvMongoMapper.toCvResponse(this.cvStorageMongoService.findById(id)));

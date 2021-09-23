@@ -51,8 +51,7 @@ public class AuthControllerRest {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "get jwtResponse", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = JwtResponse.class))}),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(schema = @Schema(hidden = true))}),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
-    })
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})})
     @PostMapping("/signin")
     public ResponseEntity<JwtResponse> authenticateUser(@RequestBody SignInRequest signInRequest) {
         Authentication authentication = this.authenticationManager.authenticate(
@@ -68,8 +67,7 @@ public class AuthControllerRest {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "get string", content = {@Content(schema = @Schema(implementation = String.class))}),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(schema = @Schema(hidden = true))}),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
-    })
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})})
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@RequestBody SignUpRequest signUpRequest) {
         signUpRequest.setPassword(this.encoder.encode(signUpRequest.getPassword()));

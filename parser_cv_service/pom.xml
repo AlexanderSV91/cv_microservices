@@ -18,7 +18,7 @@
     <properties>
         <java.version>11</java.version>
         <spring-cloud.version>2020.0.3</spring-cloud.version>
-        <org.jsoup.version>1.13.1</org.jsoup.version>
+        <org.jsoup.version>1.14.2</org.jsoup.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>

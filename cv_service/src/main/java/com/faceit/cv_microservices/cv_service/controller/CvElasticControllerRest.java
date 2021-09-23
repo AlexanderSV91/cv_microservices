@@ -37,8 +37,7 @@ public class CvElasticControllerRest {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "get all cv elastic", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CvResponse.class))}),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(schema = @Schema(hidden = true))}),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
-    })
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})})
     @GetMapping
     public ResponseEntity<Page<CvResponse>> findAllCvElastic(Pageable pageable) {
         return ResponseEntity.ok(this.cvStorageElasticService.findAllCv(pageable));
@@ -48,8 +47,7 @@ public class CvElasticControllerRest {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "get cv elastic", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CvResponse.class))}),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(schema = @Schema(hidden = true))}),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
-    })
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})})
     @GetMapping("/{id}")
     public ResponseEntity<CvResponse> findById(@PathVariable String id) {
         return ResponseEntity.ok(this.cvElasticMapper.toCvResponse(this.cvStorageElasticService.findById(id)));

@@ -42,7 +42,9 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
 
             final List<String> split = Arrays.asList(claims.getBody().get(PREFIX_CLAIM_ROLE).toString().split(","));
             return Mono.just(new UsernamePasswordAuthenticationToken(
-                    claims.getBody().getSubject(), null, split.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())));
+                    claims.getBody().getSubject(),
+                    null,
+                    split.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())));
         } catch (Exception e) {
             return Mono.empty();
         }

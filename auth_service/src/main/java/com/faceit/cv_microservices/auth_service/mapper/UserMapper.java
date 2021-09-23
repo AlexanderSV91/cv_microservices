@@ -12,8 +12,7 @@ public interface UserMapper {
 
     @Mappings({
             @Mapping(target = "roles", ignore = true),
-            @Mapping(target = "id", ignore = true)
-    })
+            @Mapping(target = "id", ignore = true)})
     User toUser(SignUpRequest signUpRequest);
 
     @Mapping(expression = "java(user.getRoles().stream().map(role -> role.getName().substring(5)).collect(java.util.stream.Collectors.toSet()))", target = "roles")
